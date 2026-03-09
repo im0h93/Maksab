@@ -9055,10 +9055,252 @@ h4[id]:hover::before, h5[id]:hover::before, h6[id]:hover::before {
         <!-- ══ SLIDER ══ -->
         <div id="sett-slider" class="sett-panel">
           <div class="settings-card" style="max-width:100%">
-            <div class="settings-title">🎠 نمط السلايدر</div>
-            <p style="font-size:.78rem;color:var(--muted);margin:0 0 1.2rem">السلايدر الحالي: <strong style="color:var(--accent)">Nexus Hero</strong> — عرض بطولي مع لوحة تغذية جانبية وانتقالات سينمائية</p>
+            <div class="settings-title">🎠 أنماط السلايدر</div>
+            <p style="font-size:.78rem;color:var(--muted);margin:0 0 1.2rem">اختر نمط السلايدر وشاهد المعاينة قبل التطبيق</p>
 
-            <!-- Live mini-preview -->
+            <!-- ══ STYLE PICKER GRID ══ -->
+            <div class="ssp-grid" id="sliderStyleGrid" style="grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.8rem;margin-bottom:1.4rem">
+
+              <!-- 1. Nexus Hero (current) -->
+              <div class="ssp-item active" id="sspNexus" onclick="previewSliderStyle('nexus',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:linear-gradient(135deg,#0c1220,#1a2540);height:85px">
+                  <div style="position:absolute;inset:0;background:linear-gradient(to left,rgba(8,12,24,.9) 0%,transparent 60%)"></div>
+                  <div style="position:absolute;top:8px;right:8px;width:52%;display:flex;flex-direction:column;gap:3px">
+                    <div style="height:4px;background:rgba(255,255,255,.6);border-radius:2px"></div>
+                    <div style="height:3px;background:rgba(255,255,255,.3);border-radius:2px;width:80%"></div>
+                    <div style="height:2px;background:rgba(255,255,255,.15);border-radius:2px;width:60%"></div>
+                  </div>
+                  <div style="position:absolute;top:8px;left:6px;width:36px;display:flex;flex-direction:column;gap:3px">
+                    <div style="height:28px;background:rgba(79,142,247,.5);border-radius:3px"></div>
+                    <div style="height:22px;background:rgba(79,142,247,.25);border-radius:3px"></div>
+                    <div style="height:22px;background:rgba(79,142,247,.15);border-radius:3px"></div>
+                  </div>
+                  <div style="position:absolute;bottom:0;right:0;width:60%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
+                </div>
+                <div class="ssp-lbl">Nexus Hero</div>
+              </div>
+
+              <!-- 2. Cards Carousel -->
+              <div class="ssp-item" id="sspCards" onclick="previewSliderStyle('cards',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:var(--s2);height:85px;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 6px">
+                  <div style="width:36px;height:65px;border-radius:6px;background:linear-gradient(135deg,#4f8ef7,#7c3aed);flex-shrink:0;box-shadow:0 4px 12px rgba(79,142,247,.4);transform:scale(1.05)"></div>
+                  <div style="width:30px;height:55px;border-radius:5px;background:var(--s3);flex-shrink:0;opacity:.7"></div>
+                  <div style="width:30px;height:55px;border-radius:5px;background:var(--s3);flex-shrink:0;opacity:.5"></div>
+                  <div style="width:30px;height:55px;border-radius:5px;background:var(--s3);flex-shrink:0;opacity:.3"></div>
+                </div>
+                <div class="ssp-lbl">بطاقات دوّارة</div>
+              </div>
+
+              <!-- 3. Fade Full -->
+              <div class="ssp-item" id="sspFade" onclick="previewSliderStyle('fade',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:linear-gradient(135deg,#0f172a,#1e1b4b);height:85px;position:relative;overflow:hidden">
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:8px">
+                    <div style="height:5px;background:rgba(255,255,255,.7);border-radius:3px;width:70%"></div>
+                    <div style="height:3px;background:rgba(255,255,255,.4);border-radius:2px;width:55%"></div>
+                    <div style="display:flex;gap:3px;margin-top:3px">
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.8)"></div>
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ssp-lbl">تلاشي كامل</div>
+              </div>
+
+              <!-- 4. Split Screen -->
+              <div class="ssp-item" id="sspSplit" onclick="previewSliderStyle('split',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="height:85px;display:grid;grid-template-columns:1fr 1fr">
+                  <div style="background:linear-gradient(135deg,#1e3a5f,#0f2440);display:flex;align-items:center;justify-content:center;padding:6px">
+                    <div style="display:flex;flex-direction:column;gap:3px;width:100%">
+                      <div style="height:4px;background:rgba(255,255,255,.6);border-radius:2px"></div>
+                      <div style="height:3px;background:rgba(255,255,255,.3);border-radius:2px;width:75%"></div>
+                      <div style="height:2px;background:rgba(255,255,255,.15);border-radius:2px;width:55%"></div>
+                    </div>
+                  </div>
+                  <div style="background:linear-gradient(135deg,#4f8ef7,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.5rem">🖼️</div>
+                </div>
+                <div class="ssp-lbl">شاشة مقسّمة</div>
+              </div>
+
+              <!-- 5. Magazine -->
+              <div class="ssp-item" id="sspMagazine" onclick="previewSliderStyle('magazine',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:var(--s1);height:85px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:4px">
+                  <div style="background:linear-gradient(135deg,#4f8ef7,#0f2440);border-radius:3px;grid-row:span 2;display:flex;align-items:flex-end;padding:4px">
+                    <div style="height:3px;background:rgba(255,255,255,.6);border-radius:2px;width:80%"></div>
+                  </div>
+                  <div style="background:var(--s3);border-radius:3px;display:flex;align-items:center;padding:3px">
+                    <div style="height:2px;background:rgba(255,255,255,.3);border-radius:2px;width:70%"></div>
+                  </div>
+                  <div style="background:var(--s3);border-radius:3px;display:flex;align-items:center;padding:3px">
+                    <div style="height:2px;background:rgba(255,255,255,.3);border-radius:2px;width:55%"></div>
+                  </div>
+                </div>
+                <div class="ssp-lbl">مجلة إخبارية</div>
+              </div>
+
+              <!-- 6. Minimal -->
+              <div class="ssp-item" id="sspMinimal" onclick="previewSliderStyle('minimal',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:var(--bg);height:85px;display:flex;align-items:center;padding:8px;gap:8px">
+                  <div style="width:3px;height:50px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:2px;flex-shrink:0"></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                    <div style="height:4px;background:var(--text);border-radius:2px;opacity:.7;width:90%"></div>
+                    <div style="height:3px;background:var(--muted);border-radius:2px;width:70%"></div>
+                    <div style="height:2px;background:var(--border);border-radius:2px;width:50%"></div>
+                    <div style="display:flex;gap:3px;margin-top:2px">
+                      <div style="width:4px;height:4px;border-radius:50%;background:var(--accent)"></div>
+                      <div style="width:4px;height:4px;border-radius:50%;background:var(--border)"></div>
+                      <div style="width:4px;height:4px;border-radius:50%;background:var(--border)"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ssp-lbl">بسيط وأنيق</div>
+              </div>
+
+              <!-- 7. Stack 3D -->
+              <div class="ssp-item" id="sspStack" onclick="previewSliderStyle('stack',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:var(--s2);height:85px;display:flex;align-items:center;justify-content:center;position:relative">
+                  <div style="width:70px;height:60px;border-radius:6px;background:linear-gradient(135deg,#4f8ef7,#7c3aed);position:absolute;box-shadow:0 6px 16px rgba(0,0,0,.4)"></div>
+                  <div style="width:70px;height:60px;border-radius:6px;background:var(--s3);position:absolute;transform:rotate(5deg) translateY(5px);z-index:-1;opacity:.7"></div>
+                  <div style="width:70px;height:60px;border-radius:6px;background:var(--s3);position:absolute;transform:rotate(10deg) translateY(10px);z-index:-2;opacity:.4"></div>
+                </div>
+                <div class="ssp-lbl">مكدّس ثلاثي</div>
+              </div>
+
+              <!-- 8. Timeline -->
+              <div class="ssp-item" id="sspTimeline" onclick="previewSliderStyle('timeline',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:var(--s1);height:85px;padding:8px;display:flex;flex-direction:column;gap:5px">
+                  <div style="display:flex;align-items:center;gap:5px">
+                    <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
+                    <div style="flex:1;height:3px;background:rgba(79,142,247,.5);border-radius:2px"></div>
+                    <div style="font-size:.5rem;color:var(--muted);font-weight:700">01</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:5px">
+                    <div style="width:6px;height:6px;border-radius:50%;background:var(--s4);flex-shrink:0"></div>
+                    <div style="flex:1;height:2px;background:var(--border);border-radius:2px"></div>
+                    <div style="font-size:.5rem;color:var(--muted);font-weight:700">02</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:5px">
+                    <div style="width:6px;height:6px;border-radius:50%;background:var(--s4);flex-shrink:0"></div>
+                    <div style="flex:1;height:2px;background:var(--border);border-radius:2px"></div>
+                    <div style="font-size:.5rem;color:var(--muted);font-weight:700">03</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:5px">
+                    <div style="width:6px;height:6px;border-radius:50%;background:var(--s4);flex-shrink:0"></div>
+                    <div style="flex:1;height:2px;background:var(--border);border-radius:2px"></div>
+                    <div style="font-size:.5rem;color:var(--muted);font-weight:700">04</div>
+                  </div>
+                </div>
+                <div class="ssp-lbl">خط زمني</div>
+              </div>
+
+              <!-- 9. Parallax -->
+              <div class="ssp-item" id="sspParallax" onclick="previewSliderStyle('parallax',this)">
+                <div class="ssp-badge">✓ مفعّل</div>
+                <div class="ssp-prev" style="background:linear-gradient(160deg,#0f2440,#1e1b4b);height:85px;position:relative;overflow:hidden">
+                  <div style="position:absolute;top:-5px;left:-5px;width:50px;height:50px;border-radius:50%;background:rgba(79,142,247,.15);filter:blur(8px)"></div>
+                  <div style="position:absolute;bottom:-5px;right:-5px;width:40px;height:40px;border-radius:50%;background:rgba(168,85,247,.2);filter:blur(8px)"></div>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px">
+                    <div style="height:4px;background:rgba(255,255,255,.65);border-radius:2px;width:75%"></div>
+                    <div style="height:3px;background:rgba(255,255,255,.35);border-radius:2px;width:55%"></div>
+                  </div>
+                </div>
+                <div class="ssp-lbl">بارالاكس</div>
+              </div>
+
+            </div>
+
+            <!-- ══ LIVE PREVIEW AREA ══ -->
+            <div style="margin-bottom:1.4rem">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem">
+                <div style="font-size:.75rem;font-weight:800;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase">👁 معاينة النمط المحدد</div>
+                <div style="font-size:.72rem;color:var(--accent);font-weight:700" id="sliderPreviewLabel">Nexus Hero</div>
+              </div>
+              <div id="sliderLivePreview" style="border:2px solid var(--accent);border-radius:var(--r2);overflow:hidden;min-height:160px;background:var(--s2);transition:all .3s">
+                <!-- Preview renders here -->
+              </div>
+            </div>
+
+            <!-- ══ OPTIONS ══ -->
+            <div style="background:var(--s3);border-radius:var(--r2);padding:1rem;margin-bottom:1rem">
+              <div style="font-size:.72rem;font-weight:800;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.85rem">⚙️ إعدادات عامة</div>
+              <div class="nx-opt-row" style="border-top:none;margin-top:0;padding-top:0">
+                <div class="nx-opt">
+                  <label class="sw" style="width:34px;height:20px"><input type="checkbox" id="sliderAutoplay" checked><span class="sw-slider"></span></label>
+                  <span>تشغيل تلقائي</span>
+                </div>
+                <div class="nx-opt">
+                  <label class="sw" style="width:34px;height:20px"><input type="checkbox" id="sliderShowArrows" checked><span class="sw-slider"></span></label>
+                  <span>أزرار التنقل</span>
+                </div>
+                <div class="nx-opt">
+                  <label class="sw" style="width:34px;height:20px"><input type="checkbox" id="sliderShowDots" checked><span class="sw-slider"></span></label>
+                  <span>النقاط</span>
+                </div>
+                <div class="nx-opt">
+                  <label class="sw" style="width:34px;height:20px"><input type="checkbox" id="sliderInfinite" checked><span class="sw-slider"></span></label>
+                  <span>تكرار لا نهائي</span>
+                </div>
+                <div class="nx-opt">
+                  <span>سرعة الانتقال</span>
+                  <select class="nx-sel" id="sliderSpeed">
+                    <option value="3">3 ثوان</option>
+                    <option value="5" selected>5 ثوان</option>
+                    <option value="7">7 ثوان</option>
+                    <option value="10">10 ثوان</option>
+                    <option value="15">15 ثانية</option>
+                  </select>
+                </div>
+                <div class="nx-opt">
+                  <span>عدد المقالات</span>
+                  <select class="nx-sel" id="sliderMaxPosts">
+                    <option value="4">4 مقالات</option>
+                    <option value="6" selected>6 مقالات</option>
+                    <option value="8">8 مقالات</option>
+                  </select>
+                </div>
+                <div class="nx-opt">
+                  <span>تأثير الانتقال</span>
+                  <select class="nx-sel" id="sliderTransition">
+                    <option value="slide">انزلاق</option>
+                    <option value="fade" selected>تلاشي</option>
+                    <option value="zoom">تكبير</option>
+                    <option value="flip">قلب</option>
+                  </select>
+                </div>
+                <div class="nx-opt">
+                  <span>الارتفاع</span>
+                  <select class="nx-sel" id="sliderHeight">
+                    <option value="sm">صغير</option>
+                    <option value="md" selected>متوسط</option>
+                    <option value="lg">كبير</option>
+                    <option value="full">ملء الشاشة</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- ══ ACTION BUTTONS ══ -->
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="applySliderStyle()" style="flex:2;min-width:140px">
+                ✅ تطبيق النمط المحدد
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="renderSlider()" style="flex:1">
+                ↺ تحديث المعاينة
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="resetSliderDefaults()" style="flex:1">
+                ⚙️ إعادة الضبط
+              </button>
+            </div>
+          </div>
+        </div>
             <div style="border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:1.4rem;display:grid;grid-template-columns:1fr 200px;height:120px">
               <div style="background:linear-gradient(135deg,#0c1220 0%,#1a2540 100%);position:relative;overflow:hidden">
                 <div style="position:absolute;inset:0;background:linear-gradient(to left,rgba(8,12,24,.95) 0%,rgba(8,12,24,.5) 40%,transparent 100%)"></div>
@@ -9107,12 +9349,6 @@ h4[id]:hover::before, h5[id]:hover::before, h6[id]:hover::before {
                 </select>
               </div>
             </div>
-            <div style="margin-top:1rem;display:flex;gap:.5rem">
-              <button class="btn btn-primary btn-sm" onclick="saveSiteSettings();renderSlider();toast('✅ تم تطبيق الإعدادات','tok')">✔ تطبيق الآن</button>
-              <button class="btn btn-ghost btn-sm" onclick="renderSlider()">↺ تحديث</button>
-            </div>
-          </div>
-        </div>
 
         <!-- ══ CONTENT ══ -->
         <div id="sett-content" class="sett-panel">
@@ -12403,6 +12639,255 @@ function resumeSlider(){if(!_nxPlaying||!getSliderAutoplay())return;const dur=ge
 let _nxTX=0;
 function nxTouchS(e){_nxTX=e.touches[0].clientX;}
 function nxTouchE(e){const dx=_nxTX-e.changedTouches[0].clientX;if(Math.abs(dx)>40){dx>0?nxNext():nxPrev();}}
+
+/* ══════════════════════════════════════════════
+   SLIDER STYLE PICKER — أنماط السلايدر
+══════════════════════════════════════════════ */
+let _sliderStyleSelected = 'nexus';
+
+const SLIDER_STYLES = {
+  nexus:    { label:'Nexus Hero',      desc:'عرض بطولي مع لوحة تغذية جانبية وانتقالات سينمائية' },
+  cards:    { label:'بطاقات دوّارة',   desc:'بطاقات متعددة تتحرك بشكل دائري وأنيق' },
+  fade:     { label:'تلاشي كامل',      desc:'انتقال سلس بالتلاشي على خلفية بالحجم الكامل' },
+  split:    { label:'شاشة مقسّمة',     desc:'صورة على اليمين ونص على اليسار بنمط احترافي' },
+  magazine: { label:'مجلة إخبارية',    desc:'تخطيط شبكي يشبه المجلات الرقمية الحديثة' },
+  minimal:  { label:'بسيط وأنيق',      desc:'تصميم نظيف ومبسّط يُبرز المحتوى' },
+  stack:    { label:'مكدّس ثلاثي',     desc:'بطاقات مكدّسة بتأثير عمق ثلاثي الأبعاد' },
+  timeline: { label:'خط زمني',         desc:'عرض المقالات على شكل خط زمني تفاعلي' },
+  parallax: { label:'بارالاكس',         desc:'تأثير عمق بارالاكس على الخلفية' },
+};
+
+function previewSliderStyle(style, el){
+  _sliderStyleSelected = style;
+  // Update active state
+  document.querySelectorAll('.ssp-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  // Update label
+  const lbl = document.getElementById('sliderPreviewLabel');
+  if(lbl) lbl.textContent = SLIDER_STYLES[style]?.label || style;
+  // Render preview
+  _renderSliderPreview(style);
+}
+
+function _renderSliderPreview(style){
+  const wrap = document.getElementById('sliderLivePreview');
+  if(!wrap) return;
+  // Get sample posts or use placeholders
+  const pub = (db?.posts||[]).filter(p=>p.status==='published');
+  const posts = pub.length ? pub.slice(0,5) : [
+    {id:1,title:'كيف تبني مدونة احترافية في 2026',category:'تقنية',author:'المشرف',date:'2026-03-09',content:'محتوى تجريبي...',emoji:'💻',featured:true},
+    {id:2,title:'أفضل أدوات الإنتاجية للمطورين',category:'أدوات',author:'المشرف',date:'2026-03-08',content:'محتوى تجريبي...',emoji:'🛠️'},
+    {id:3,title:'مستقبل الذكاء الاصطناعي في المحتوى',category:'ذكاء اصطناعي',author:'المشرف',date:'2026-03-07',content:'محتوى تجريبي...',emoji:'🤖'},
+    {id:4,title:'تصميم تجربة مستخدم متميزة',category:'تصميم',author:'المشرف',date:'2026-03-06',content:'محتوى تجريبي...',emoji:'🎨'},
+  ];
+
+  const PREVIEWS = {
+    nexus: _previewNexus,
+    cards: _previewCards,
+    fade:  _previewFade,
+    split: _previewSplit,
+    magazine: _previewMagazine,
+    minimal: _previewMinimal,
+    stack: _previewStack,
+    timeline: _previewTimeline,
+    parallax: _previewParallax,
+  };
+  const fn = PREVIEWS[style] || _previewNexus;
+  wrap.innerHTML = fn(posts);
+}
+
+function _previewNexus(posts){
+  const p = posts[0]; const p2 = posts[1]; const p3 = posts[2];
+  const gradients = ['linear-gradient(135deg,#0c1220,#1a2540)','linear-gradient(135deg,#0f2440,#1e3a5f)','linear-gradient(135deg,#1a1040,#2d1b69)'];
+  return `<div style="display:grid;grid-template-columns:1fr 220px;height:200px;border-radius:var(--r2);overflow:hidden">
+    <div style="position:relative;${p.coverImg?'background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.6)),url('+p.coverImg+') center/cover':'background:'+gradients[0]}">
+      <div style="position:absolute;inset:0;background:linear-gradient(to left,rgba(8,12,24,.92) 0%,rgba(8,12,24,.4) 50%,transparent 100%)"></div>
+      <div style="position:absolute;bottom:8px;right:8px;font-size:3.5rem;font-weight:900;color:rgba(255,255,255,.05);line-height:1;font-family:sans-serif">01</div>
+      <div style="position:absolute;top:14px;left:12px;background:var(--accent);color:#fff;font-size:.6rem;font-weight:800;padding:.2rem .55rem;border-radius:50px">⭐ مميز</div>
+      <div style="position:absolute;top:40px;right:16px;width:55%">
+        <div style="font-size:.62rem;color:rgba(255,255,255,.5);margin-bottom:5px">${p.category}</div>
+        <div style="font-size:.9rem;font-weight:800;color:#fff;line-height:1.3;margin-bottom:6px">${p.title}</div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,.5)">${p.author} · ${p.date||''}</div>
+        <button onclick="openPost(${p.id})" style="margin-top:8px;padding:.3rem .8rem;background:var(--accent);border:none;border-radius:50px;color:#fff;font-size:.62rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ ↝</button>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;width:60%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
+    </div>
+    <div style="background:var(--s1);border-right:1px solid var(--border);padding:.7rem;display:flex;flex-direction:column;gap:.5rem">
+      <div style="font-size:.55rem;font-weight:800;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;padding-bottom:.4rem;border-bottom:1px solid var(--border)">المقالات المميزة</div>
+      ${posts.slice(0,3).map((pp,i)=>`<div style="display:flex;gap:.4rem;align-items:center;cursor:pointer" onclick="openPost(${pp.id})">
+        <div style="width:32px;height:32px;border-radius:5px;flex-shrink:0;background:${i===0?'linear-gradient(135deg,var(--accent),var(--accent2))':'var(--s3)'};display:flex;align-items:center;justify-content:center;font-size:.9rem">${pp.emoji||'📄'}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:.65rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${pp.title}</div><div style="font-size:.55rem;color:var(--muted)">${pp.category}</div></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function _previewCards(posts){
+  return `<div style="padding:1rem;background:var(--s2);min-height:200px;display:flex;align-items:center;justify-content:center;gap:12px;overflow:hidden;border-radius:var(--r2)">
+    ${posts.slice(0,4).map((p,i)=>{
+      const scale = i===1?'scale(1.08)':'scale(0.9)';
+      const op = i===1?'1':i===0||i===2?'0.75':'0.5';
+      const z = i===1?3:i===0||i===2?2:1;
+      return `<div onclick="openPost(${p.id})" style="flex-shrink:0;width:110px;border-radius:10px;overflow:hidden;transform:${scale};opacity:${op};z-index:${z};cursor:pointer;transition:all .3s;box-shadow:${i===1?'0 12px 30px rgba(0,0,0,.5)':'0 4px 12px rgba(0,0,0,.2)'}">
+        <div style="height:100px;background:${i===1?'linear-gradient(135deg,var(--accent),var(--accent2))':'linear-gradient(135deg,#1e2840,#0f1928)'};display:flex;align-items:center;justify-content:center;font-size:2.2rem">${p.emoji||'📄'}</div>
+        <div style="padding:.45rem .5rem;background:var(--s1)">
+          <div style="font-size:.58rem;font-weight:700;color:var(--text);line-height:1.2;height:2.4em;overflow:hidden">${p.title}</div>
+          <div style="font-size:.52rem;color:var(--muted);margin-top:2px">${p.category}</div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function _previewFade(posts){
+  const p = posts[0];
+  const gr = ['linear-gradient(135deg,#0f172a,#1e1b4b)','linear-gradient(135deg,#0c1220,#1e3a5f)'];
+  return `<div style="position:relative;height:200px;border-radius:var(--r2);overflow:hidden;cursor:pointer" onclick="openPost(${p.id})">
+    <div style="position:absolute;inset:0;${p.coverImg?'background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.7)),url('+p.coverImg+') center/cover':gr[0]}"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem">
+      <div style="font-size:.62rem;color:rgba(255,255,255,.5);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.5rem">${p.category}</div>
+      <div style="font-size:1.1rem;font-weight:900;color:#fff;line-height:1.3;margin-bottom:.6rem;max-width:80%">${p.title}</div>
+      <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-bottom:.85rem">${p.author} · ${p.date||''}</div>
+      <div style="display:flex;gap:.4rem">
+        ${posts.slice(0,4).map((pp,i)=>`<div style="width:7px;height:7px;border-radius:50%;background:${i===0?'var(--accent)':'rgba(255,255,255,.3)'}"></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function _previewSplit(posts){
+  const p = posts[0];
+  return `<div style="display:grid;grid-template-columns:1fr 1fr;height:200px;border-radius:var(--r2);overflow:hidden">
+    <div style="background:${p.coverImg?'url('+p.coverImg+') center/cover':'linear-gradient(135deg,#1e3a5f,#0f2440)'};display:flex;align-items:center;padding:1.2rem;cursor:pointer" onclick="openPost(${p.id})">
+      <div>
+        <div style="font-size:.58rem;color:var(--accent);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem">${p.category}</div>
+        <div style="font-size:.95rem;font-weight:900;color:#fff;line-height:1.3;margin-bottom:.5rem">${p.title}</div>
+        <div style="font-size:.62rem;color:rgba(255,255,255,.5);margin-bottom:.7rem">${p.author}</div>
+        <button onclick="openPost(${p.id})" style="padding:.25rem .7rem;background:var(--accent);border:none;border-radius:50px;color:#fff;font-size:.6rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ ↝</button>
+      </div>
+    </div>
+    <div style="background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center">
+        <div style="font-size:3.5rem">${p.emoji||'📄'}</div>
+        <div style="font-size:.6rem;color:rgba(255,255,255,.7);margin-top:.4rem;font-weight:700">${p.category}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function _previewMagazine(posts){
+  return `<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:200px;border-radius:var(--r2);overflow:hidden">
+    <div style="grid-row:span 2;background:${posts[0].coverImg?'linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.6)),url('+posts[0].coverImg+') center/cover':'linear-gradient(160deg,var(--accent),#1e3a5f)'};position:relative;cursor:pointer;display:flex;align-items:flex-end;padding:.7rem" onclick="openPost(${posts[0].id})">
+      <div>
+        <div style="font-size:.58rem;color:var(--accent);background:rgba(0,0,0,.5);padding:.1rem .4rem;border-radius:50px;display:inline-block;margin-bottom:.3rem">${posts[0].category}</div>
+        <div style="font-size:.78rem;font-weight:800;color:#fff;line-height:1.3">${posts[0].title}</div>
+      </div>
+    </div>
+    ${posts.slice(1,3).map(pp=>`<div style="background:var(--s2);padding:.6rem;cursor:pointer;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)" onclick="openPost(${pp.id})">
+      <div style="font-size:.52rem;color:var(--accent);font-weight:700;margin-bottom:.25rem">${pp.category}</div>
+      <div style="font-size:.68rem;font-weight:700;color:var(--text);line-height:1.3">${pp.title}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function _previewMinimal(posts){
+  return `<div style="padding:1.2rem 1.5rem;min-height:200px;background:var(--bg);display:flex;flex-direction:column;justify-content:center;gap:.9rem;border-radius:var(--r2)">
+    ${posts.slice(0,3).map((p,i)=>`<div style="display:flex;align-items:center;gap:.9rem;cursor:pointer;padding:.6rem 0;border-bottom:1px solid var(--border)" onclick="openPost(${p.id})">
+      <div style="width:3px;height:40px;background:${i===0?'linear-gradient(180deg,var(--accent),var(--accent2))':'var(--border)'};border-radius:2px;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:.58rem;color:var(--muted);font-weight:700;letter-spacing:.3px;text-transform:uppercase;margin-bottom:.2rem">${p.category}</div>
+        <div style="font-size:${i===0?'.9rem':'.78rem'};font-weight:${i===0?900:700};color:var(--text);line-height:1.3">${p.title}</div>
+      </div>
+      <div style="font-size:1.4rem;flex-shrink:0">${p.emoji||'📄'}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function _previewStack(posts){
+  return `<div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;background:var(--s2);border-radius:var(--r2)">
+    ${posts.slice(0,3).map((p,i)=>{
+      const rot = [0,4,8][i]; const ty = [0,8,16][i]; const op = [1,.75,.5][i]; const z = [3,2,1][i];
+      return `<div onclick="openPost(${p.id})" style="position:absolute;width:200px;border-radius:10px;overflow:hidden;transform:rotate(${rot}deg) translateY(${ty}px);opacity:${op};z-index:${z};box-shadow:0 ${8+i*4}px ${20+i*8}px rgba(0,0,0,.4);cursor:pointer">
+        <div style="height:90px;background:${i===0?'linear-gradient(135deg,var(--accent),var(--accent2))':'linear-gradient(135deg,#1e2840,#0f1928)'};display:flex;align-items:center;justify-content:center;font-size:2.5rem">${p.emoji||'📄'}</div>
+        <div style="padding:.5rem .7rem;background:var(--s1)">
+          <div style="font-size:.65rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
+          <div style="font-size:.55rem;color:var(--muted);margin-top:2px">${p.category}</div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function _previewTimeline(posts){
+  return `<div style="padding:1rem 1.5rem;min-height:200px;background:var(--bg);border-radius:var(--r2)">
+    <div style="position:relative">
+      <div style="position:absolute;right:8px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent),var(--border))"></div>
+      ${posts.slice(0,4).map((p,i)=>`<div style="display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.85rem;cursor:pointer" onclick="openPost(${p.id})">
+        <div style="flex:1;background:${i===0?'rgba(79,142,247,.08)':'var(--s2)'};border:1px solid ${i===0?'rgba(79,142,247,.25)':'var(--border)'};border-radius:var(--r);padding:.5rem .7rem">
+          <div style="font-size:.58rem;color:var(--muted);margin-bottom:.2rem">${p.date||''} · ${p.category}</div>
+          <div style="font-size:.72rem;font-weight:700;color:var(--text)">${p.title}</div>
+        </div>
+        <div style="width:18px;height:18px;border-radius:50%;background:${i===0?'var(--accent)':'var(--s3)'};border:2px solid ${i===0?'var(--accent)':'var(--border)'};flex-shrink:0;margin-top:.3rem;z-index:1"></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function _previewParallax(posts){
+  const p = posts[0];
+  return `<div style="position:relative;height:200px;border-radius:var(--r2);overflow:hidden;cursor:pointer" onclick="openPost(${p.id})">
+    <div style="position:absolute;inset:-20px;${p.coverImg?'background:url('+p.coverImg+') center/cover':'background:linear-gradient(160deg,#0f172a,#1e1b4b)'};transform:scale(1.1)"></div>
+    <div style="position:absolute;top:-10px;left:-10px;width:120px;height:120px;border-radius:50%;background:rgba(79,142,247,.15);filter:blur(25px)"></div>
+    <div style="position:absolute;bottom:-10px;right:-10px;width:100px;height:100px;border-radius:50%;background:rgba(168,85,247,.2);filter:blur(20px)"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.3) 60%,transparent 100%)"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.2rem">
+      <div style="font-size:.58rem;color:var(--accent);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.35rem">${p.category}</div>
+      <div style="font-size:1rem;font-weight:900;color:#fff;line-height:1.3;margin-bottom:.4rem">${p.title}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:.62rem;color:rgba(255,255,255,.5)">${p.author} · ${p.date||''}</div>
+        <button onclick="openPost(${p.id})" style="padding:.22rem .65rem;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:50px;color:#fff;font-size:.6rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ ↝</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function applySliderStyle(){
+  const style = _sliderStyleSelected;
+  if(!db.siteSettings) db.siteSettings = {};
+  db.siteSettings.sliderStyle = style;
+  db.siteSettings.sliderAutoplay = document.getElementById('sliderAutoplay')?.checked !== false;
+  db.siteSettings.sliderShowArrows = document.getElementById('sliderShowArrows')?.checked !== false;
+  db.siteSettings.sliderSpeed = parseInt(document.getElementById('sliderSpeed')?.value||5);
+  db.siteSettings.sliderMaxPosts = parseInt(document.getElementById('sliderMaxPosts')?.value||6);
+  db.siteSettings.sliderTransition = document.getElementById('sliderTransition')?.value || 'fade';
+  db.siteSettings.sliderHeight = document.getElementById('sliderHeight')?.value || 'md';
+  saveDB();
+  renderSlider();
+  toast(`✅ تم تطبيق نمط "${SLIDER_STYLES[style]?.label}" بنجاح`,'tok');
+}
+
+function resetSliderDefaults(){
+  if(!confirm('إعادة ضبط إعدادات السلايدر للقيم الافتراضية؟')) return;
+  _sliderStyleSelected = 'nexus';
+  document.querySelectorAll('.ssp-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('sspNexus')?.classList.add('active');
+  document.getElementById('sliderPreviewLabel').textContent = 'Nexus Hero';
+  document.getElementById('sliderAutoplay').checked = true;
+  document.getElementById('sliderShowArrows').checked = true;
+  document.getElementById('sliderSpeed').value = '5';
+  document.getElementById('sliderMaxPosts').value = '6';
+  _renderSliderPreview('nexus');
+  toast('⚙️ تم إعادة الضبط للافتراضي','tok');
+}
+
+// Initialize preview when slider tab opens
+document.addEventListener('click', e=>{
+  if(e.target.closest('[onclick*="switchSett(\'slider\'"]') || e.target.closest('.sett-tab-btn') && e.target.textContent.includes('سلايدر')){
+    setTimeout(()=>_renderSliderPreview(_sliderStyleSelected||'nexus'), 100);
+  }
+});
+// Also init on load
+setTimeout(()=>{ if(document.getElementById('sliderLivePreview')) _renderSliderPreview('nexus'); }, 1200);
 
 /* ── compat stubs ── */
 function goSlide(i){nxActivate(i,true);}
