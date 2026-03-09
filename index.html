@@ -1030,6 +1030,7 @@ textarea:focus{
 .nx-opt{display:flex;align-items:center;gap:.45rem;font-size:.78rem;color:var(--muted2);}
 .nx-sel{padding:.3rem .65rem;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Tajawal',sans-serif;font-size:.76rem;outline:none;cursor:pointer;}
 .nx-sel:focus{border-color:var(--accent);}
+.alt-dot.active{background:var(--accent)!important;transform:scale(1.35)!important;}
 
 /* ── Responsive ── */
 /* ══════════════════════════════════════════
@@ -9696,7 +9697,23 @@ h4[id]:hover::before, h5[id]:hover::before, h6[id]:hover::before {
         <div class="sh">
           <div><div class="st">📤 استيراد / تصدير</div><div class="ss">احتفظ بنسخة احتياطية من بياناتك</div></div>
         </div>
-        <div class="st" style="font-size:1rem;margin-bottom:1rem;color:var(--muted2)">📦 تصدير البيانات <span style="font-size:.72rem;color:var(--accent);background:rgba(79,142,247,.1);padding:.1rem .45rem;border-radius:4px;font-weight:600;margin-right:.4rem">HTML</span></div>
+
+        <!-- ══ EMBED FOR GITHUB ══ -->
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.05));border:1.5px solid rgba(16,185,129,.3);border-radius:var(--r2);padding:1.1rem 1.3rem;margin-bottom:1.4rem">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+            <div style="font-size:1.5rem">🚀</div>
+            <div>
+              <div style="font-weight:900;font-size:.95rem;color:var(--text)">تضمين البيانات للنشر على GitHub</div>
+              <div style="font-size:.75rem;color:var(--muted);margin-top:.15rem">يصدر <code style="background:var(--s3);padding:.1rem .35rem;border-radius:4px;font-size:.72rem">index.html</code> مع مقالاتك وبياناتك مدمجة بداخله — ارفعه مباشرة على GitHub</div>
+            </div>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted2);margin-bottom:.85rem;padding:.6rem .8rem;background:rgba(0,0,0,.2);border-radius:var(--r);border-right:3px solid #10b981">
+            💡 <strong>كيف يعمل:</strong> بياناتك (المقالات، الإعدادات، التصنيفات) ستُضمَّن مباشرة في الملف كبيانات افتراضية، فيراها أي زائر من أي جهاز فوراً.
+          </div>
+          <button onclick="embedDataInFile()" style="width:100%;padding:.75rem;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:var(--r2);color:#fff;font-size:.92rem;font-weight:900;cursor:pointer;font-family:'Tajawal',sans-serif;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;box-shadow:0 4px 16px rgba(16,185,129,.3)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(16,185,129,.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(16,185,129,.3)'">
+            ⬇️ تحميل index.html مع البيانات المدمجة
+          </button>
+        </div>
         <div class="export-grid">
           <div class="export-card" onclick="exportData('all')">
             <div class="export-ic">📦</div>
@@ -12492,19 +12509,31 @@ function renderSlider(){
   clearInterval(sliderTimer);sliderTimer=null;
   const wrap=document.getElementById('featuredSliderWrap');
   if(!wrap)return;
-  // ترتيب الموضوعات: المثبتة أولاً، ثم المميزة، ثم الأحدث
   let pinned=db.posts.filter(p=>p.status==='published'&&p.pinned);
   let featured=db.posts.filter(p=>p.status==='published'&&p.featured&&!p.pinned);
   let latest=db.posts.filter(p=>p.status==='published'&&!p.featured&&!p.pinned).sort((a,b)=>new Date(b.date)-new Date(a.date));
   let fp=[...pinned,...featured,...latest];
   if(!fp.length){wrap.innerHTML='';return;}
-  sliderPosts=fp.slice(0,8);sliderIdx=0;
+  const maxPosts=parseInt(db.siteSettings?.sliderMaxPosts||8);
+  sliderPosts=fp.slice(0,maxPosts);sliderIdx=0;
   sliderDur=getSliderDur();
-  wrap.innerHTML=buildNexusSlider();
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    nxActivate(0,false);
-    if(getSliderAutoplay())startSliderTimer();
-  }));
+
+  // اختيار النمط المحفوظ
+  const style = db.siteSettings?.sliderStyle || _sliderStyleSelected || 'nexus';
+  _sliderStyleSelected = style;
+
+  const BUILDERS = {
+    nexus:    ()=>{ wrap.innerHTML=buildNexusSlider(); requestAnimationFrame(()=>requestAnimationFrame(()=>{ nxActivate(0,false); if(getSliderAutoplay())startSliderTimer(); })); },
+    cards:    ()=>{ wrap.innerHTML=_buildCardsSlider(); _initCardsSlider(); },
+    fade:     ()=>{ wrap.innerHTML=_buildFadeSlider(); _initFadeSlider(); },
+    split:    ()=>{ wrap.innerHTML=_buildSplitSlider(); _initFadeSlider(); },
+    magazine: ()=>{ wrap.innerHTML=_buildMagazineSlider(); _initFadeSlider(); },
+    minimal:  ()=>{ wrap.innerHTML=_buildMinimalSlider(); _initFadeSlider(); },
+    stack:    ()=>{ wrap.innerHTML=_buildStackSlider(); _initCardsSlider(); },
+    timeline: ()=>{ wrap.innerHTML=_buildTimelineSlider(); },
+    parallax: ()=>{ wrap.innerHTML=_buildParallaxSlider(); _initFadeSlider(); },
+  };
+  (BUILDERS[style] || BUILDERS.nexus)();
 }
 
 function _nxBg(p){
@@ -12583,6 +12612,252 @@ function buildNexusSlider(){
 }
 
 let _nxPlaying=true;
+
+/* ══════════════════════════════════════════════
+   SLIDER BUILDERS — بناة الأنماط الثمانية
+══════════════════════════════════════════════ */
+let _altSliderIdx=0, _altSliderTimer=null;
+
+function _altActivate(idx){
+  const posts=sliderPosts; const n=posts.length; if(!n)return;
+  _altSliderIdx=((idx%n)+n)%n;
+  document.querySelectorAll('.alt-slide').forEach((s,i)=>{
+    s.style.opacity=i===_altSliderIdx?'1':'0';
+    s.style.zIndex=i===_altSliderIdx?'2':'1';
+    s.style.pointerEvents=i===_altSliderIdx?'auto':'none';
+  });
+  document.querySelectorAll('.alt-dot').forEach((d,i)=>d.classList.toggle('active',i===_altSliderIdx));
+}
+
+function _initFadeSlider(){
+  _altSliderIdx=0;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    _altActivate(0);
+    if(getSliderAutoplay()){
+      clearInterval(_altSliderTimer);
+      _altSliderTimer=setInterval(()=>_altActivate(_altSliderIdx+1),getSliderDur());
+    }
+  }));
+}
+
+function _initCardsSlider(){
+  _altSliderIdx=1;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>_renderCardsState()));
+}
+
+function _renderCardsState(){
+  const n=sliderPosts.length;
+  document.querySelectorAll('.cards-slide').forEach((card,i)=>{
+    const rel=(i-_altSliderIdx+n)%n;
+    const offset=rel===0?-1:rel===1?0:rel===2?1:rel===n-1?-2:3;
+    const scale=rel===1?1.05:rel===0||rel===2?0.88:0.75;
+    const op=rel===1?1:rel===0||rel===2?0.65:0;
+    const z=rel===1?5:rel===0||rel===2?3:1;
+    card.style.cssText=`position:absolute;transition:all .4s cubic-bezier(.34,1.1,.64,1);
+      transform:translateX(${offset*130}px) scale(${scale});
+      opacity:${op};z-index:${z};left:50%;margin-left:-90px;cursor:pointer;`;
+  });
+  document.querySelectorAll('.alt-dot').forEach((d,i)=>d.classList.toggle('active',i===_altSliderIdx));
+}
+
+/* ── CARDS CAROUSEL ── */
+function _buildCardsSlider(){
+  const posts=sliderPosts;
+  const slides=posts.map((p,i)=>`
+    <div class="cards-slide" onclick="openPost(${p.id})" style="width:180px;border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.4)">
+      <div style="height:160px;background:${p.coverImg?'url('+p.coverImg+') center/cover':'linear-gradient(135deg,'+(['#4f8ef7,#7c3aed','#ef4444,#f97316','#10b981,#059669','#f59e0b,#d97706','#8b5cf6,#6d28d9'][i%5])+')'};display:flex;align-items:center;justify-content:center;font-size:3rem">${!p.coverImg?p.emoji||'📄':''}</div>
+      <div style="padding:.7rem .85rem;background:var(--s1)">
+        <div style="font-size:.6rem;color:var(--accent);font-weight:800;margin-bottom:.3rem">${p.category}</div>
+        <div style="font-size:.8rem;font-weight:800;color:var(--text);line-height:1.3;height:2.6em;overflow:hidden">${p.title}</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:.35rem">${p.author}</div>
+      </div>
+    </div>`).join('');
+  const dots=posts.map((_,i)=>`<div class="alt-dot" onclick="_altSliderIdx=${i};_renderCardsState()" style="width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s"></div>`).join('');
+  return `<div style="position:relative;width:100%;overflow:hidden;padding:1.5rem 0 1.2rem;background:var(--s2);border-radius:var(--r2)">
+    <div style="position:relative;height:260px;display:flex;align-items:center;justify-content:center">${slides}</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.85rem;margin-top:.5rem">
+      <button onclick="_altSliderIdx=Math.max(0,_altSliderIdx-1);_renderCardsState()" style="width:32px;height:32px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1rem">›</button>
+      <div style="display:flex;gap:.4rem">${dots}</div>
+      <button onclick="_altSliderIdx=Math.min(sliderPosts.length-1,_altSliderIdx+1);_renderCardsState()" style="width:32px;height:32px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1rem">‹</button>
+    </div>
+  </div>`;
+}
+
+/* ── FADE FULL ── */
+function _buildFadeSlider(){
+  const posts=sliderPosts;
+  const slides=posts.map((p,i)=>`
+    <div class="alt-slide" onclick="openPost(${p.id})" style="position:absolute;inset:0;opacity:0;transition:opacity .7s ease;cursor:pointer;${p.coverImg?'background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.7)),url('+p.coverImg+') center/cover':'background:'+['linear-gradient(135deg,#0f172a,#1e1b4b)','linear-gradient(135deg,#0c1220,#1e3a5f)','linear-gradient(135deg,#1a1040,#2d1b69)','linear-gradient(135deg,#0f2440,#1e3a5f)'][i%4]}">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem">
+        <div style="font-size:.65rem;color:rgba(255,255,255,.5);letter-spacing:.6px;text-transform:uppercase;margin-bottom:.6rem">${p.category}</div>
+        <div style="font-size:clamp(1rem,3vw,1.6rem);font-weight:900;color:#fff;line-height:1.3;margin-bottom:.7rem;max-width:600px">${p.title}</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-bottom:1.1rem">${p.author} · ${fmtD(p.date)}</div>
+        <button onclick="event.stopPropagation();openPost(${p.id})" style="padding:.4rem 1.1rem;background:var(--accent);border:none;border-radius:50px;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ المقال ↝</button>
+      </div>
+    </div>`).join('');
+  const dots=posts.map((_,i)=>`<div class="alt-dot" onclick="_altActivate(${i});clearInterval(_altSliderTimer)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .2s"></div>`).join('');
+  return `<div style="position:relative;width:100%;aspect-ratio:16/6;min-height:220px;border-radius:var(--r2);overflow:hidden">
+    ${slides}
+    <button onclick="_altActivate(_altSliderIdx-1)" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:1.2rem;z-index:10">›</button>
+    <button onclick="_altActivate(_altSliderIdx+1)" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:1.2rem;z-index:10">‹</button>
+    <div style="position:absolute;bottom:.85rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:10">${dots}</div>
+  </div>`;
+}
+
+/* ── SPLIT SCREEN ── */
+function _buildSplitSlider(){
+  const posts=sliderPosts;
+  const slides=posts.map((p,i)=>`
+    <div class="alt-slide" style="position:absolute;inset:0;opacity:0;transition:opacity .6s ease;display:grid;grid-template-columns:1fr 1fr">
+      <div style="padding:2rem;display:flex;flex-direction:column;justify-content:center;background:var(--s1)">
+        <div style="font-size:.62rem;color:var(--accent);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.5rem">${p.category}</div>
+        <div style="font-size:clamp(.9rem,2vw,1.35rem);font-weight:900;color:var(--text);line-height:1.35;margin-bottom:.65rem">${p.title}</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:1rem">${p.author} · ${fmtD(p.date)}</div>
+        <div>
+          <button onclick="openPost(${p.id})" style="padding:.4rem 1.1rem;background:var(--accent);border:none;border-radius:50px;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ ↝</button>
+        </div>
+      </div>
+      <div style="${p.coverImg?'background:url('+p.coverImg+') center/cover':'background:linear-gradient(135deg,'+['var(--accent),var(--accent2)','#ef4444,#f97316','#10b981,#059669','#8b5cf6,#6d28d9'][i%4]+')'};display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="openPost(${p.id})">
+        ${!p.coverImg?`<div style="font-size:4rem">${p.emoji||'📄'}</div>`:''}
+      </div>
+    </div>`).join('');
+  const dots=posts.map((_,i)=>`<div class="alt-dot" onclick="_altActivate(${i})" style="width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s"></div>`).join('');
+  return `<div style="position:relative;width:100%;aspect-ratio:16/7;min-height:220px;border-radius:var(--r2);overflow:hidden">
+    ${slides}
+    <button onclick="_altActivate(_altSliderIdx-1)" style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1.2rem;z-index:10">›</button>
+    <button onclick="_altActivate(_altSliderIdx+1)" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1.2rem;z-index:10">‹</button>
+    <div style="position:absolute;bottom:.75rem;left:50%;transform:translateX(-50%);display:flex;gap:.45rem;z-index:10">${dots}</div>
+  </div>`;
+}
+
+/* ── MAGAZINE ── */
+function _buildMagazineSlider(){
+  const posts=sliderPosts; const n=posts.length; if(!n)return'';
+  const makeGrid=(offset)=>{
+    const pp=posts.map((_,i)=>posts[(i+offset)%n]);
+    return`<div class="alt-slide" style="position:absolute;inset:0;opacity:0;transition:opacity .6s;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px">
+      <div onclick="openPost(${pp[0].id})" style="grid-row:span 2;position:relative;cursor:pointer;${pp[0].coverImg?'background:url('+pp[0].coverImg+') center/cover':'background:linear-gradient(160deg,var(--accent),#0f2440)'};display:flex;align-items:flex-end;padding:.85rem">
+        <div style="background:linear-gradient(transparent,rgba(0,0,0,.85));position:absolute;inset:0;border-radius:0"></div>
+        <div style="position:relative;z-index:1">
+          <div style="font-size:.58rem;color:var(--accent);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:50px;display:inline-block;margin-bottom:.3rem">${pp[0].category}</div>
+          <div style="font-size:.9rem;font-weight:800;color:#fff;line-height:1.3">${pp[0].title}</div>
+          <div style="font-size:.62rem;color:rgba(255,255,255,.5);margin-top:.2rem">${pp[0].author}</div>
+        </div>
+      </div>
+      ${[1,2].map(j=>`<div onclick="openPost(${pp[j]?.id||pp[0].id})" style="background:var(--s2);padding:.75rem;cursor:pointer;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)">
+        <div style="font-size:.55rem;color:var(--accent);font-weight:700;margin-bottom:.25rem">${pp[j]?.category||''}</div>
+        <div style="font-size:.72rem;font-weight:700;color:var(--text);line-height:1.3">${pp[j]?.title||''}</div>
+        <div style="font-size:.58rem;color:var(--muted);margin-top:.3rem">${pp[j]?.author||''}</div>
+      </div>`).join('')}
+    </div>`;
+  };
+  const slides=posts.map((_,i)=>makeGrid(i)).join('');
+  const dots=posts.map((_,i)=>`<div class="alt-dot" onclick="_altActivate(${i})" style="width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s"></div>`).join('');
+  return`<div style="position:relative;width:100%;aspect-ratio:16/7;min-height:220px;border-radius:var(--r2);overflow:hidden">${slides}
+    <button onclick="_altActivate(_altSliderIdx-1)" style="position:absolute;left:.75rem;bottom:.75rem;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;z-index:10;font-size:1rem">›</button>
+    <button onclick="_altActivate(_altSliderIdx+1)" style="position:absolute;left:2.85rem;bottom:.75rem;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;z-index:10;font-size:1rem">‹</button>
+    <div style="position:absolute;bottom:.85rem;right:.85rem;display:flex;gap:.4rem;z-index:10">${dots}</div>
+  </div>`;
+}
+
+/* ── MINIMAL ── */
+function _buildMinimalSlider(){
+  const posts=sliderPosts;
+  return`<div style="background:var(--bg);border-radius:var(--r2);padding:1.5rem 2rem;border:1px solid var(--border)">
+    ${posts.map((p,i)=>`<div onclick="openPost(${p.id})" style="display:flex;align-items:center;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all .2s" onmouseover="this.style.paddingRight='.5rem'" onmouseout="this.style.paddingRight='0'">
+      <div style="width:4px;height:48px;background:${i===0?'linear-gradient(180deg,var(--accent),var(--accent2))':'var(--border)'};border-radius:2px;flex-shrink:0;transition:all .2s"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.58rem;color:var(--muted);font-weight:700;letter-spacing:.3px;text-transform:uppercase;margin-bottom:.2rem">${p.category} · ${fmtD(p.date)}</div>
+        <div style="font-size:${i===0?'1rem':'.85rem'};font-weight:${i===0?900:700};color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
+        ${i===0?`<div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">${(p.summary||p.content||'').replace(/<[^>]+>/g,'').slice(0,80)}...</div>`:''}
+      </div>
+      <div style="font-size:${i===0?'1.8rem':'1.3rem'};flex-shrink:0">${p.emoji||'📄'}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ── STACK 3D ── */
+function _buildStackSlider(){
+  const posts=sliderPosts;
+  const slides=posts.map((p,i)=>`
+    <div class="cards-slide" onclick="openPost(${p.id})" style="width:280px;border-radius:14px;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.5)">
+      <div style="height:180px;${p.coverImg?'background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.5)),url('+p.coverImg+') center/cover':'background:linear-gradient(135deg,'+(['var(--accent),var(--accent2)','#ef4444,#f97316','#10b981,#059669','#8b5cf6,#6d28d9','#f59e0b,#d97706'][i%5])+')'};display:flex;align-items:flex-end;padding:.85rem">
+        <div>
+          <div style="font-size:.58rem;color:rgba(255,255,255,.6);margin-bottom:.3rem">${p.category}</div>
+          <div style="font-size:.92rem;font-weight:800;color:#fff;line-height:1.3">${p.title}</div>
+        </div>
+      </div>
+      <div style="padding:.7rem 1rem;background:var(--s1);display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:.65rem;color:var(--muted)">${p.author} · ${fmtD(p.date)}</div>
+        </div>
+        <button onclick="event.stopPropagation();openPost(${p.id})" style="padding:.25rem .7rem;background:var(--accent);border:none;border-radius:50px;color:#fff;font-size:.62rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ</button>
+      </div>
+    </div>`).join('');
+  const dots=posts.map((_,i)=>`<div class="alt-dot" onclick="_altSliderIdx=${i};_renderCardsState()" style="width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s"></div>`).join('');
+  return`<div style="position:relative;background:var(--s2);border-radius:var(--r2);padding:2rem 0 1.2rem;overflow:hidden">
+    <div style="position:relative;height:280px;display:flex;align-items:center;justify-content:center">${slides}</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.85rem;margin-top:.5rem">
+      <button onclick="_altSliderIdx=Math.max(0,_altSliderIdx-1);_renderCardsState()" style="width:34px;height:34px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1.1rem">›</button>
+      <div style="display:flex;gap:.4rem">${dots}</div>
+      <button onclick="_altSliderIdx=Math.min(sliderPosts.length-1,_altSliderIdx+1);_renderCardsState()" style="width:34px;height:34px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1.1rem">‹</button>
+    </div>
+  </div>`;
+}
+
+/* ── TIMELINE ── */
+function _buildTimelineSlider(){
+  const posts=sliderPosts;
+  return`<div style="background:var(--bg);border-radius:var(--r2);padding:1.5rem;border:1px solid var(--border);position:relative">
+    <div style="position:absolute;right:calc(1.5rem + 14px);top:1.5rem;bottom:1.5rem;width:2px;background:linear-gradient(180deg,var(--accent),var(--border))"></div>
+    ${posts.map((p,i)=>`<div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:${i<posts.length-1?'1.1rem':'0'};cursor:pointer" onclick="openPost(${p.id})">
+      <div style="flex:1;background:${i===0?'rgba(79,142,247,.08)':'var(--s2)'};border:1px solid ${i===0?'rgba(79,142,247,.3)':'var(--border)'};border-radius:var(--r);padding:.65rem .85rem;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='${i===0?'rgba(79,142,247,.3)':'var(--border)'}'" >
+        <div style="font-size:.58rem;color:var(--muted);margin-bottom:.2rem">${fmtD(p.date)} · ${p.category}</div>
+        <div style="font-size:${i===0?'.88rem':'.78rem'};font-weight:${i===0?800:700};color:var(--text);line-height:1.35">${p.title}</div>
+        ${i===0?`<div style="font-size:.65rem;color:var(--muted);margin-top:.25rem">${(p.summary||p.content||'').replace(/<[^>]+>/g,'').slice(0,90)}...</div>`:''}
+      </div>
+      <div style="width:20px;height:20px;border-radius:50%;background:${i===0?'var(--accent)':'var(--s3)'};border:2px solid ${i===0?'var(--accent)':'var(--border)'};flex-shrink:0;margin-top:.4rem;z-index:1;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:${i===0?'#fff':'var(--muted)'}">${i+1}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ── PARALLAX ── */
+function _buildParallaxSlider(){
+  const posts=sliderPosts;
+  const slides=posts.map((p,i)=>`
+    <div class="alt-slide" onclick="openPost(${p.id})" style="position:absolute;inset:0;opacity:0;transition:opacity .8s ease;cursor:pointer;overflow:hidden">
+      <div style="position:absolute;inset:-30px;transition:transform .1s linear;${p.coverImg?'background:url('+p.coverImg+') center/cover':'background:'+['linear-gradient(160deg,#0f172a,#1e1b4b)','linear-gradient(160deg,#0c1220,#1e3a5f)','linear-gradient(160deg,#1a1040,#2d1b69)','linear-gradient(160deg,#0f2440,#1e3a5f)'][i%4]};transform:scale(1.08)"></div>
+      <div style="position:absolute;top:-20px;left:-20px;width:200px;height:200px;border-radius:50%;background:rgba(79,142,247,.12);filter:blur(40px)"></div>
+      <div style="position:absolute;bottom:-20px;right:-20px;width:180px;height:180px;border-radius:50%;background:rgba(168,85,247,.15);filter:blur(35px)"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.35) 55%,transparent 100%)"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem 2rem">
+        <div style="font-size:.62rem;color:var(--accent);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.45rem">${p.category}</div>
+        <div style="font-size:clamp(.95rem,2.5vw,1.4rem);font-weight:900;color:#fff;line-height:1.3;margin-bottom:.5rem;max-width:60%">${p.title}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:.65rem;color:rgba(255,255,255,.5)">${p.author} · ${fmtD(p.date)} · 👁 ${(p.views||0).toLocaleString('ar')}</div>
+          <button onclick="event.stopPropagation();openPost(${p.id})" style="padding:.35rem .95rem;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);border-radius:50px;color:#fff;font-size:.68rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">اقرأ ↝</button>
+        </div>
+      </div>
+    </div>`).join('');
+  const dots=posts.map((_,i)=>`<div class="alt-dot" onclick="_altActivate(${i});clearInterval(_altSliderTimer)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .2s"></div>`).join('');
+  return`<div style="position:relative;width:100%;aspect-ratio:16/6;min-height:220px;border-radius:var(--r2);overflow:hidden">
+    ${slides}
+    <button onclick="_altActivate(_altSliderIdx-1)" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:1.3rem;z-index:10">›</button>
+    <button onclick="_altActivate(_altSliderIdx+1)" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:1.3rem;z-index:10">‹</button>
+    <div style="position:absolute;bottom:.85rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:10">${dots}</div>
+  </div>`;
+}
+
+/* تحديث نقاط alt-dot */
+document.addEventListener('click',e=>{
+  const d=e.target.closest('.alt-dot');
+  if(d){
+    d.closest('[style]')?.querySelectorAll('.alt-dot').forEach(x=>{
+      x.style.background=x===d?'var(--accent)':'rgba(255,255,255,.3)';
+      x.style.transform=x===d?'scale(1.3)':'scale(1)';
+    });
+  }
+});
 function nxActivate(idx,fromUser){
   const n=sliderPosts.length;if(!n)return;
   idx=((idx%n)+n)%n;sliderIdx=idx;
@@ -15884,6 +16159,33 @@ function downloadJSON(str, filename){
   const blob = new Blob([str],{type:'application/json'});
   const a = document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
   URL.revokeObjectURL(a.href);
+}
+
+function embedDataInFile(){
+  // Get current page HTML
+  const html = document.documentElement.outerHTML;
+
+  // Serialize current DB (remove password for safety? No — keep it for full restore)
+  const dbJson = JSON.stringify(db);
+  const escaped = dbJson.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+
+  // Replace the loadDB function's fallback return with current data
+  const marker = "try{const r=localStorage.getItem(SK);if(r)return JSON.parse(r);}catch(e){}";
+  const newLoad = `try{const r=localStorage.getItem(SK);if(r)return JSON.parse(r);}catch(e){}
+  // ══ EMBEDDED DATA — تم التضمين تلقائياً ══
+  const _embedded=\`${escaped}\`;
+  try{ const _d=JSON.parse(_embedded); localStorage.setItem(SK,JSON.stringify(_d)); return _d; }catch(e){}`;
+
+  const newHtml = html.replace(marker, newLoad);
+
+  // Download
+  const blob = new Blob([newHtml], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('✅ تم تصدير index.html مع البيانات المدمجة — ارفعه على GitHub','tok');
 }
 
 function importData(input){
