@@ -16674,36 +16674,7 @@ updBadges();
   }
 
   /* ── 8. Connection status indicator in header ── */
-  function _buildSyncIndicator() {
-    const hi = document.querySelector('.hi');
-    if(!hi || document.getElementById('syncStatusDot')) return;
-    const dot = document.createElement('div');
-    dot.id = 'syncStatusDot';
-    dot.title = 'المزامنة التلقائية مفعّلة';
-    dot.style.cssText = [
-      'display:flex','align-items:center','gap:.35rem',
-      'font-size:.7rem','font-weight:700','color:var(--accent3)',
-      'padding:.28rem .6rem','border-radius:50px',
-      'background:rgba(34,211,165,.1)','border:1px solid rgba(34,211,165,.25)',
-      'cursor:default','white-space:nowrap','flex-shrink:0',
-    ].join(';');
-    dot.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#22d3a5;display:inline-block;animation:syncPulse 2s infinite ease-in-out"></span><span class="sync-dot-label">مباشر</span>';
-    // Insert after theme button
-    const tb = document.getElementById('themeBtn') || hi.lastElementChild;
-    hi.insertBefore(dot, tb?.nextSibling || null);
-
-    // Hide label on small screens
-    const mq = window.matchMedia('(max-width:480px)');
-    const toggle = q => { const lbl = dot.querySelector('.sync-dot-label'); if(lbl) lbl.style.display = q.matches ? 'none' : ''; };
-    toggle(mq); mq.addEventListener('change', toggle);
-  }
-
-  // Build indicator after DOM ready
-  if(document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _buildSyncIndicator);
-  } else {
-    setTimeout(_buildSyncIndicator, 600);
-  }
+  // sync indicator removed
 
 })();
 
@@ -20337,5 +20308,11 @@ document.addEventListener('keydown', e => {
     </div>
   </div>
 </div>
+
+<!-- ══ SITE FOOTER ══ -->
+<footer style="width:100%;padding:.85rem 1rem;text-align:center;font-family:'Tajawal',sans-serif;font-size:.8rem;font-weight:600;color:var(--muted);background:var(--s1);border-top:1px solid var(--border);letter-spacing:.3px;user-select:none;">
+  جميع الحقوق محفوظة &copy; <span id="footerYear"></span> — مكسب | MAKSAB
+</footer>
+<script>document.getElementById('footerYear').textContent=new Date().getFullYear();</script>
 </body>
 </html>
