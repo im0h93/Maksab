@@ -8637,8 +8637,17 @@ h4[id]:hover::before, h5[id]:hover::before, h6[id]:hover::before {
               <div class="esp-sec-ttl">ملخص المقال</div>
               <textarea id="eSumm" rows="3" placeholder="وصف مختصر..."></textarea>
             </div>
-            <div class="esp-sec">
+              <div class="esp-sec">
               <div class="esp-sec-ttl">خيارات النشر</div>
+              <!-- حقل التاريخ -->
+              <div style="margin-bottom:.85rem">
+                <div style="font-size:.72rem;font-weight:800;color:var(--muted2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:.4rem">📅 تاريخ النشر</div>
+                <input type="date" id="eDate"
+                  style="width:100%;padding:.5rem .75rem;background:var(--s3);border:1.5px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Tajawal',sans-serif;font-size:.85rem;outline:none;cursor:pointer"
+                  onfocus="this.style.borderColor='var(--accent)'"
+                  onblur="this.style.borderColor='var(--border)'">
+                <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem">يُستخدم هذا التاريخ كتاريخ رسمي للمقال</div>
+              </div>
               <div class="toggle-row">
                 <div><div class="toggle-label">📌 تثبيت</div><div class="toggle-sub">في أعلى القائمة</div></div>
                 <label class="sw"><input type="checkbox" id="ePinned"><span class="sw-slider"></span></label>
@@ -13623,6 +13632,7 @@ function initEditor(postId=null){
     document.getElementById('ePinned').checked=p.pinned||false;
     document.getElementById('eFeatured').checked=p.featured||false;
     document.getElementById('eAllowComments').checked=p.allowComments!==false;
+    document.getElementById('eDate').value=p.date||today();
     selEmoji=p.emoji||'🚀';
     editTags=[...(p.tags||[])];
     populateCatSelect(p.category);
@@ -13634,6 +13644,7 @@ function initEditor(postId=null){
     document.getElementById('eKeywords').value='';
     document.getElementById('ePinned').checked=false;
     document.getElementById('eFeatured').checked=false;
+    document.getElementById('eDate').value=today();
     document.getElementById('eAllowComments').checked=true;
     selEmoji='🚀';editTags=[];
     populateCatSelect();
@@ -15085,6 +15096,7 @@ function savePost(status){
       p.allowComments=document.getElementById('eAllowComments').checked;
       p.metaDesc=document.getElementById('eMetaDesc').value;
       p.keywords=document.getElementById('eKeywords').value;
+      p.date=document.getElementById('eDate')?.value||p.date||today();
       p.images=[...postImages];
       p.coverImg=coverImg?.src||null;
       addAct('edit','عُدّل: "'+title+'"');
@@ -15092,7 +15104,7 @@ function savePost(status){
     }
   }else{
     const p={id:Date.now(),title,content,category:document.getElementById('eCat').value,emoji:selEmoji,status,
-      author:me.name,authorId:me.id,date:today(),tags:[...editTags],
+      author:me.name,authorId:me.id,date:document.getElementById('eDate')?.value||today(),tags:[...editTags],
       pinned:document.getElementById('ePinned').checked,featured:document.getElementById('eFeatured').checked,
       allowComments:document.getElementById('eAllowComments').checked,views:0,
       metaDesc:document.getElementById('eMetaDesc').value,keywords:document.getElementById('eKeywords').value,
@@ -16538,8 +16550,22 @@ function showAlert(id,msg,cls){document.getElementById(id).innerHTML=`<div class
 /* ══════════════════════════════════════════
    UTILS
 ══════════════════════════════════════════ */
-function today(){return new Date().toISOString().split('T')[0];}
-function fmtD(d){try{return new Date(d).toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});}catch{return d;}}
+function today(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fmtD(d){
+  if(!d)return'';
+  try{
+    // تجنب فرق التوقيت UTC — نقرأ التاريخ مباشرة من النص
+    const parts=String(d).split('T')[0].split('-');
+    if(parts.length===3){
+      const [y,m,day]=parts.map(Number);
+      return new Date(y,m-1,day).toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+    }
+    return new Date(d).toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+  }catch{return d;}
+}
 function readTime(text){const w=text?text.trim().split(/\s+/).length:0;return Math.max(1,Math.ceil(w/200));}
 
 /* ── LIGHTBOX ── */
